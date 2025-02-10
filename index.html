@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>獎勵抽卡遊戲</title>
+    <style>
+        body {
+            background-color: #a0d8ef;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+        }
+        .card {
+            width: 200px;
+            height: 300px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.6s ease-in-out;
+        }
+        .flipped {
+            transform: rotateY(180deg);
+        }
+        #log {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎁 抽一張獎勵卡 🎁</h1>
+    <div class="card" id="rewardCard" onclick="drawCard()">點擊抽卡</div>
+    <h2>抽卡紀錄</h2>
+    <ul id="log"></ul>
+
+    <script>
+        const rewards = [
+            { text: "說早安和晚安 ☀️🌙", rarity: "⭐ 普通", weight: 30 },
+            { text: "說想你了 💕", rarity: "⭐ 普通", weight: 30 },
+            { text: "摸頭 ❤️", rarity: "🌟 超級稀有", weight: 10},
+            { text: "說我好愛你 🥰", rarity: "🌟 稀有", weight: 15 },
+            { text: "特別獎勵 🎁", rarity: "🌟🌟 超級稀有", weight: 15 }
+        ];
+        
+        function drawCard() {
+            let card = document.getElementById("rewardCard");
+            card.classList.add("flipped");
+            
+            setTimeout(() => {
+                let totalWeight = rewards.reduce((sum, reward) => sum + reward.weight, 0);
+                let randomNum = Math.random() * totalWeight;
+                let accumulatedWeight = 0;
+                let reward;
+                
+                for (let i = 0; i < rewards.length; i++) {
+                    accumulatedWeight += rewards[i].weight;
+                    if (randomNum < accumulatedWeight) {
+                        reward = rewards[i];
+                        break;
+                    }
+                }
+                
+                card.textContent = `${reward.text} \n(${reward.rarity})`;
+                card.classList.remove("flipped");
+                
+                let now = new Date();
+                let timestamp = now.toLocaleString("zh-TW");
+                let logEntry = document.createElement("li");
+                logEntry.textContent = `${timestamp} - ${reward.text} (${reward.rarity})`;
+                document.getElementById("log").appendChild(logEntry);
+            }, 600);
+        }
+    </script>
+</body>
+</html>
+
